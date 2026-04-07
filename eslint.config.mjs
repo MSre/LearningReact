@@ -2,14 +2,15 @@ import { defineConfig } from "eslint/config";
 import js from "@eslint/js";
 import globals from "globals";
 import reactPlugin from "eslint-plugin-react";
-// import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
+import pluginQuery from "@tanstack/eslint-plugin-query";
 // import css from "@eslint/css";
 
 /** @type {import('eslint').Linter.Config[]} */
 export default defineConfig([
   js.configs.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
+  ...pluginQuery.configs["flat/recommended"],
   {
     files: ["**/*.{js,mjs,cjs,jsx,ts,tsx}"],
     ...reactPlugin.configs.flat.recommended,
