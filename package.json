@@ -33,7 +33,8 @@
     "happy-dom": "^20.8.9",
     "prettier": "^3.8.1",
     "vite": "^8.0.5",
-    "vitest": "^4.1.3"
+    "vitest": "^4.1.3",
+    "vitest-fetch-mock": "^0.4.5"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.96.2",

@@ -10,6 +10,9 @@ export default defineConfig({
     }),
     react(),
   ],
+  test: {
+    environment: "happy-dom",
+  },
   server: {
     proxy: {
       "/api": {
