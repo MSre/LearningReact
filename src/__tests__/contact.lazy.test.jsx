@@ -34,15 +34,16 @@ test("can submit contact form", async () => {
   const btn = screen.getByRole("button");
   btn.click();
 
-  // const h3 = await screen.findByRole("heading", { level: 3 });
-  // expect(h3.innerText).toContain("Submitted");
+  const h3 = await screen.findByRole("heading", { level: 3 });
+  expect(h3.innerText).toContain("Submitted");
 
   const requests = fetchMocker.requests();
   expect(requests.length).toBe(1);
-  expect(requests[0].url).toBe("/api/contact");
+  expect(requests[0].url).toBe("http://localhost:3000/api/contact");
   expect(requests[0].method).toEqual("POST");
-  expect(fetchMocker).toHaveBeenNthCalledWith("/api/contact", {
+  expect(fetchMocker).toHaveBeenCalledWith("/api/contact", {
     body: JSON.stringify(testData),
-    headers: { "content-type": "application/json" },
+    headers: { "Content-Type": "application/json" },
+    method: "POST",
   });
 });
