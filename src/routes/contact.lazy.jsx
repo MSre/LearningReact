@@ -27,7 +27,7 @@ function ContactComponent() {
       ) : (
         <form onSubmit={mutation.mutate}>
           <input name="name" placeholder="Name" />
-          <input name="email" placeholder="Email" />
+          <input name="email" type="email" placeholder="Email" />
           <textarea name="message" placeholder="Message" />
           <button>Submit</button>
         </form>
