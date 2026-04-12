@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, Suspense, use } from "react";
 import { useQuery } from "@tanstack/react-query";
 import getPastOrders from "../api/getPastOrders.js";
 import getPastOrder from "../api/getPastOrder.js";
