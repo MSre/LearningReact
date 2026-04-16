@@ -13,16 +13,24 @@ const server = fastify({
 });
 
 const PORT = process.env.PORT || 3000;
+const HOST = ("RENDER" in process.env) ? `0.0.0.0` : `localhost`;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const db = await AsyncDatabase.open("./pizza.sqlite");
 
-server.register(fastifyStatic, {
-  root: path.join(__dirname, "public"),
-  // prefix: "/public/",
-});
+server.addHook('preHandler', (req, res, done) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST");
+  res.header("Access-Control-Allow-Headers",  "*");
+
+  const isPreflight = /options/i.test(req.method);
+  if (isPreflight) {
+    return res.send();
+  }
+  done();
+})
 
 server.get("/api/pizzas", async function getPizzas(req, res) {
   const pizzasPromise = db.all(
@@ -300,7 +308,7 @@ server.post("/api/contact", async function contactForm(req, res) {
 
 const start = async () => {
   try {
-    await server.listen({ port: PORT });
+    await server.listen({ host: HOST, port: PORT });
     console.log(`Server listening on port ${PORT}`);
   } catch (err) {
     console.error(err);
