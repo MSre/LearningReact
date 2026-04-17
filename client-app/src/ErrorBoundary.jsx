@@ -2,12 +2,17 @@ import { Component } from "react";
 import { Link } from "@tanstack/react-router";
 
 class ErrorBoundary extends Component {
-  state = { hasError: false };
-  static getDerivedStateFromProps() {
-    return { hasError: true };
+  state = { hasError: false, error: null, errorInfo: null };
+
+  // This is the correct method
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
   }
+
   componentDidCatch(error, errorInfo) {
-    console.error("ErrorBoundary caught error", error, errorInfo);
+    console.error("🚨 ErrorBoundary caught an error:", error);
+    console.error("Error Info:", errorInfo);
+    this.setState({ errorInfo });
   }
   render() {
     if (this.state.hasError) {

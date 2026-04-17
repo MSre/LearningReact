@@ -9,9 +9,9 @@ export default defineConfig({
       autoCodeSplitting: true,
     }),
     react({
-      babel: {
-        plugins: ["babel-plugin-react-compiler"],
-      },
+      // babel: {
+      //   plugins: ["babel-plugin-react-compiler"],
+      // },
     }),
   ],
   test: {

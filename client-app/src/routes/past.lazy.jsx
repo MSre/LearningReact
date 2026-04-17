@@ -1,11 +1,12 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { useState, Suspense, use } from "react";
+import { useState, Suspense, use, startTransition } from "react";
 import { useQuery } from "@tanstack/react-query";
 import getPastOrders from "../api/getPastOrders.js";
 import getPastOrder from "../api/getPastOrder.js";
 import { intlFormat } from "../intlFormatter.js";
 import Modal from "../Modal.jsx";
 import ErrorBoundary from "../ErrorBoundary.jsx";
+import { useSuspenseQuery } from "@tanstack/react-query"; // Add this
 
 export const Route = createLazyFileRoute("/past")({
   component: ErrorBoundaryWrappedPastOrderRoutes,
@@ -13,11 +14,6 @@ export const Route = createLazyFileRoute("/past")({
 
 function ErrorBoundaryWrappedPastOrderRoutes() {
   const [page, setPage] = useState(1);
-  const loadedPromise = useQuery({
-    queryKey: ["past-orders", page],
-    queryFn: () => getPastOrders(page),
-    staleTime: 30000,
-  }).promise;
   return (
     <ErrorBoundary>
       <Suspense
@@ -27,19 +23,18 @@ function ErrorBoundaryWrappedPastOrderRoutes() {
           </div>
         }
       >
-        <PastOrdersRoute
-          loadedPromise={loadedPromise}
-          page={page}
-          setPage={setPage}
-          {...props}
-        />
+        <PastOrdersRoute page={page} setPage={setPage} />
       </Suspense>
     </ErrorBoundary>
   );
 }
 
-function PastOrdersRoute({ page, setPage, loadedPromise }) {
-  const data = use(loadedPromise);
+function PastOrdersRoute({ page, setPage }) {
+  const { data } = useSuspenseQuery({
+    queryKey: ["past-orders", page],
+    queryFn: () => getPastOrders(page),
+    staleTime: 30000,
+  });
   const [focusedOrder, setFocusedOrder] = useState();
   const { isLoading: isLoadingFocusOrder, data: focusOrderData } = useQuery({
     queryKey: ["past-order", focusedOrder],
@@ -83,9 +78,11 @@ function PastOrdersRoute({ page, setPage, loadedPromise }) {
         </button>
         <button
           disabled={data.length < 10}
-          onClick={() => {
-            setPage(page + 1);
-          }}
+          onClick={() =>
+            startTransition(() => {
+              setPage(page + 1);
+            })
+          }
         >
           Next
         </button>
